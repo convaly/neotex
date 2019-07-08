@@ -8,8 +8,6 @@ You have the option to **highlight changes** from the previous save using latexd
 
 ### Update: Now working on NeoVim and Vim 8
 
-*This plugin is experimental and not well tested*
-
 ### live preview of a latex document
 ![Demo1 gif](img/demo_1.gif?raw=true)
 ### live preview with latexdiff
@@ -39,7 +37,10 @@ The PDF is created in the same folder where your latex file is stored.
 | `g:neotex_latexdiff_options`      | -         | additional options for latexdiff          |
 | `g:neotex_pdflatex_add_options`   | -         | additional options for pdflatex (`-jobname=<filname>` and `-interaction=nonstopmode` is always set) |
 | `g:neotex_bibtex`                 | 0         | compile bibtex references if present (.bib file must have the same name as the .tex file) |
+| `g:neotex_pdflatex_alternative`   | -         | alternative for pdflatex (e.g. `xelatex` or `lualatex`) |
+| `g:neotex_subfile`                | 0         | **experimental** support for subfiles ([#8](https://github.com/donRaphaco/neotex/issues/8)) (latexdiff won't work if enabled!) |
 
+I also recommend setting `let g:tex_flavor = 'latex'`, which can prevent some issues. (see `:h g:tex_flavor` for information)
 ## Commands
 
 | Command       | Description           |
