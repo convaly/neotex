@@ -36,11 +36,11 @@ The PDF is created in the same folder where your latex file is stored.
 | `g:neotex_latexdiff`              | 0         | enable latexdiff                          |
 | `g:neotex_latexdiff_options`      | -         | additional options for latexdiff          |
 | `g:neotex_pdflatex_add_options`   | -         | additional options for pdflatex (`-jobname=<filname>` and `-interaction=nonstopmode` is always set) |
+| `g:neotex_bibtex`                 | 0         | compile bibtex references if present (.bib file must have the same name as the .tex file) |
 | `g:neotex_pdflatex_alternative`   | -         | alternative for pdflatex (e.g. `xelatex` or `lualatex`) |
 | `g:neotex_subfile`                | 0         | **experimental** support for subfiles ([#8](https://github.com/donRaphaco/neotex/issues/8)) (latexdiff won't work if enabled!) |
 
 I also recommend setting `let g:tex_flavor = 'latex'`, which can prevent some issues. (see `:h g:tex_flavor` for information)
-
 ## Commands
 
 | Command       | Description           |

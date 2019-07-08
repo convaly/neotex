@@ -106,6 +106,21 @@ else
     let b:neotex_prediff = b:neotex_tempfile
 endif
 
+
+let s:neotex_pdflatex_cmd = 'pdflatex -shell-escape -jobname=' . fnameescape(expand('%:t:r')) . ' -interaction=nonstopmode '
+if exists('neotex_pdflatex_add_options')
+	let s:neotex_pdflatex_cmd .= g:neotex_pdflatex_add_options . ' '
+endif
+let s:neotex_pdflatex_cmd .= s:neotex_preview_tempname
+let b:neotex_jobexe .= s:neotex_pdflatex_cmd
+
+if get(g:, 'neotex_bibtex', 0) && filereadable(expand('%:r') . '.bib')
+    let b:neotex_jobexe .= ' && bibtex ' . fnameescape(expand('%:t:r')) . ' && ' . s:neotex_pdflatex_cmd . ' && ' . s:neotex_pdflatex_cmd
+endif
+
+if get(g:, 'neotex_enabled', 1) == 2
+	au! _neotex_ TextChanged,TextChangedI <buffer> call NeoTexUpdate()
+endif
 let b:neotex_jobexe .= get(g:, 'neotex_pdflatex_alternative', 'pdflatex') . ' -shell-escape -jobname='
             \ . fnameescape(fnamemodify(b:neotex_mainfile, ':t:r')) . ' -interaction=nonstopmode '
 if exists('neotex_pdflatex_add_options')
@@ -126,6 +141,9 @@ function! s:job_exit(...)
 endfunction
 
 function! s:job_log(job_id, data, event)
+    if get(g:, 'neotex_log', 0) == 2 && a:event == 'stdout'
+        call writefile(a:data, 'neotex.log', 'a')
+    elseif get(g:, 'neotex_log', 0) && a:event == 'stderr'
     if get(g:, 'neotex_log', 0)
                 \ && (a:event == 'stderr' || g:neotex_log == 2)
         call writefile(a:data, 'neotex.log', 'a')
@@ -143,6 +161,7 @@ function! s:latex_compile(_)
         call writefile(getline(1, '$'), b:neotex_prediff)
     endif
     if has('nvim')
+        let s:job = jobstart(['bash', '-c', b:neotex_jobexe], {'cwd': expand('%:p:h'), 'on_exit': function('s:job_exit'), 'on_stderr': function('s:job_log'), 'on_stdout': function('s:job_log')})
         let s:job = jobstart(['bash', '-c', b:neotex_jobexe],
                     \ {'cwd': b:neotex_compile_cwd,
                     \ 'on_exit': function('s:job_exit'),
